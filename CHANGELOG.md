@@ -2,6 +2,8 @@
 
 ## Unreleased
 
+## 0.1.0 - 2026-10-21
+
 ### Added
 
 - For Tainted Lost, every randomly rolled card gets an extra roll to become a Holy Card, raising the chance from
