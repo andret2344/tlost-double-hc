@@ -144,3 +144,6 @@ lua for i = 1, 100 do Isaac.Spawn(5, 300, 0, Isaac.GetRandomPosition(), Vector(0
 
 Licensed under the [Apache License 2.0](LICENSE). If you redistribute this mod or anything built from it, you have to
 keep the contents of the [NOTICE](NOTICE) file, which links back to this repository.
+
+The Workshop thumbnail in [`workshop/`](workshop) is made from sprites and a font of The Binding of Isaac:
+Repentance+, which belong to Edmund McMillen and Nicalis. It is not covered by the Apache License.
