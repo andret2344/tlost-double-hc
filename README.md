@@ -9,6 +9,7 @@ Tainted Lost finds Holy Cards twice as often. Nothing else changes.
 ![Repentance+](https://img.shields.io/badge/Isaac-Repentance%2B-8b0000)
 ![Lua 5.3](https://img.shields.io/badge/Lua-5.3-000080?logo=lua)
 ![No REPENTOGON](https://img.shields.io/badge/REPENTOGON-not%20required-success)
+[![License](https://img.shields.io/github/license/andret2344/tlost-double-hc)](LICENSE)
 
 </div>
 
@@ -138,3 +139,8 @@ lua for i = 1, 100 do Isaac.Spawn(5, 300, 0, Isaac.GetRandomPosition(), Vector(0
 - API definitions: [filloax/isaac-lua-api-vscode](https://github.com/filloax/isaac-lua-api-vscode)
 - Reverse-engineered card logic: [TeamREPENTOGON/REPENTOGON](https://github.com/TeamREPENTOGON/REPENTOGON)
 - API documentation: [IsaacDocs](https://wofsauge.github.io/IsaacDocs/rep/)
+
+## License
+
+Licensed under the [Apache License 2.0](LICENSE). If you redistribute this mod or anything built from it, you have to
+keep the contents of the [NOTICE](NOTICE) file, which links back to this repository.

@@ -79,11 +79,12 @@ jobs:
           fi
           echo "RELEASE_COMMIT=$(git rev-parse HEAD)" >> "$GITHUB_ENV"
 
-      # Only the files the game loads, in a folder named like <directory>, ready to unzip into the mods folder
+      # The files the game loads plus the license, in a folder named like <directory>, ready to unzip into the mods
+      # folder
       - name: Pack the mod
         run: |
           mkdir -p build/package/tlost-double-hc
-          cp main.lua metadata.xml build/package/tlost-double-hc/
+          cp main.lua metadata.xml LICENSE NOTICE build/package/tlost-double-hc/
           (cd build/package && zip -r "../tlost-double-hc-$VERSION.zip" tlost-double-hc)
 
       - name: Draft the GitHub release
