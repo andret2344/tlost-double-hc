@@ -1,0 +1,15 @@
+{
+  "version": "2.0.0",
+  "tasks": [
+    {
+      "label": "Isaac: tail log",
+      "type": "shell",
+      "command": "$f = @((Join-Path $env:USERPROFILE 'Documents'), [Environment]::GetFolderPath('MyDocuments')) | ForEach-Object { Join-Path $_ 'My Games\\Binding of Isaac Repentance+\\log.txt' } | Where-Object { Test-Path $_ } | Select-Object -First 1; if (-not $f) { Write-Error 'Isaac log.txt not found in Documents or OneDrive Documents'; exit 1 }; Get-Content -Path $f -Wait -Tail 30 | Select-String 'TLOST_DOUBLE_HC|Error'",
+      "options": {
+        "shell": { "executable": "powershell.exe", "args": ["-NoProfile", "-Command"] }
+      },
+      "isBackground": true,
+      "problemMatcher": []
+    }
+  ]
+}

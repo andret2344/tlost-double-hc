@@ -1,0 +1,55 @@
+name: CI
+
+on:
+  push:
+  pull_request:
+
+permissions:
+  contents: read
+
+env:
+  LUALS_VERSION: 3.19.2
+  ISAAC_API_VERSION: 1.17.1
+
+jobs:
+  lua-check:
+    name: Lua against the vanilla API
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v7
+
+      - name: Install lua-language-server
+        run: |
+          mkdir -p "$RUNNER_TEMP/luals"
+          curl -fsSL "https://github.com/LuaLS/lua-language-server/releases/download/${LUALS_VERSION}/lua-language-server-${LUALS_VERSION}-linux-x64.tar.gz" | tar -xz -C "$RUNNER_TEMP/luals"
+          echo "$RUNNER_TEMP/luals/bin" >> "$GITHUB_PATH"
+
+      # The same vanilla (non-REPENTOGON) definitions the Isaac VS Code extension uses locally.
+      - name: Download Isaac API definitions
+        run: |
+          curl -fsSL -o "$RUNNER_TEMP/isaac-api.vsix" "https://open-vsx.org/api/Filloax/isaac-lua-api-vscode/${ISAAC_API_VERSION}/file/Filloax.isaac-lua-api-vscode-${ISAAC_API_VERSION}.vsix"
+          unzip -q "$RUNNER_TEMP/isaac-api.vsix" 'extension/out/emmylua/vanilla/*' -d "$RUNNER_TEMP/isaac-api"
+
+      # RegisterMod is commented out in the definitions, the extension declares it as a global instead.
+      - name: Write check config
+        run: |
+          cat > "$RUNNER_TEMP/luarc.json" <<EOF
+          {
+            "runtime.version": "Lua 5.3",
+            "workspace.library": ["$RUNNER_TEMP/isaac-api/extension/out/emmylua/vanilla"],
+            "workspace.checkThirdParty": false,
+            "diagnostics.globals": ["RegisterMod"]
+          }
+          EOF
+
+      - name: Check
+        run: lua-language-server --check=. --configpath="$RUNNER_TEMP/luarc.json" --checklevel=Warning --logpath="$RUNNER_TEMP/luals-log"
+
+  mod-check:
+    name: Metadata and release config
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v7
+
+      - name: Check
+        run: python3 .github/scripts/check_mod.py

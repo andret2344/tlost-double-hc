@@ -1,0 +1,8 @@
+{
+  "Lua.runtime.version": "Lua 5.3",
+  "Lua.workspace.checkThirdParty": false,
+  "boi-lua.repentogonEnabled": false,
+  "files.associations": {
+    ".anm2": "xml"
+  }
+}
