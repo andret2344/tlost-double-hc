@@ -33,7 +33,7 @@ Measured in game: 39 Holy Cards out of 203 random card spawns (19.2%), in line w
 
 [url=https://github.com/andret2344/tlost-double-hc]Source code on GitHub[/url]</description>
     <version>0.1.0</version>
-    <visibility>Private</visibility>
+    <visibility>Public</visibility>
     <tag id="Lua"/>
     <tag id="Cards"/>
     <tag id="Tweaks"/>
