@@ -2,7 +2,38 @@
 <metadata>
     <name>Double Holy Cards for Tainted Lost</name>
     <directory>tlost-double-hc</directory>
-    <description></description>
-    <version>0.1</version>
+    <description>[h1]Double Holy Cards for Tainted Lost[/h1]
+Tainted Lost dies to a single hit, and the Holy Card is the one thing that buys a second chance. In vanilla, every card that spawns has a [b]10%[/b] chance to turn into a Holy Card. This mod raises it to [b]20%[/b]: noticeable over a run, while the character keeps its edge.
+
+[h2]What changes[/h2]
+[list]
+[*]Random cards from room rewards, chests and other drops
+[*]Cards in shops (they stay paid)
+[*]Cards rolled by items such as Deck of Cards or Booster Pack
+[/list]
+
+[h2]What stays the same[/h2]
+[list]
+[*]Cards you drop from your inventory come back as they were
+[*]Scripted cards, such as The Fool on Depths II
+[*]Runes, soul stones and objects like Dice Shard keep vanilla's 10%
+[*]Every other character: the mod only acts when a Tainted Lost is in the game, co-op included
+[*]No unlock needed, same as vanilla
+[/list]
+
+[h2]Tested[/h2]
+Measured in game: 39 Holy Cards out of 203 random card spawns (19.2%), in line with the expected ~19% once runes and objects are counted in.
+
+[h2]Compatibility[/h2]
+[list]
+[*]Repentance+, no REPENTOGON needed
+[*]Do not combine with More Holy Cards for Tainted Lost or other mods that replace random cards. Only one of them takes effect.
+[/list]
+
+[url=https://github.com/andret2344/tlost-double-hc]Source code on GitHub[/url]</description>
+    <version>1.0</version>
     <visibility>Private</visibility>
+    <tag id="Lua"/>
+    <tag id="Cards"/>
+    <tag id="Tweaks"/>
 </metadata>

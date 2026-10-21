@@ -1,0 +1,98 @@
+name: Release
+
+# Run from the Actions tab ("Run workflow" on main) with the version to release, e.g. 1.2.0. The workflow runs CI,
+# sets the version in metadata.xml, moves the notes from "Unreleased" in CHANGELOG.md to a section for the version,
+# commits both as "Released 1.2.0.", and creates a draft GitHub release of that commit with the mod zip.
+# Publishing the draft creates the v1.2.0 tag. The Steam Workshop upload stays manual (ModUploader), because it needs
+# the Steam account's credentials.
+# A version with a suffix, like 1.2.0-beta.1, becomes a pre-release.
+
+on:
+  workflow_dispatch:
+    inputs:
+      version:
+        description: Version to release, e.g. 1.2.0 or 1.2.0-beta.1
+        required: true
+        type: string
+
+permissions:
+  contents: write
+
+# Two releases at once would push conflicting commits
+concurrency: release
+
+jobs:
+  ci:
+    uses: ./.github/workflows/ci.yml
+
+  release:
+    needs: ci
+    runs-on: ubuntu-latest
+    env:
+      # Used in scripts only as "$VERSION", never pasted into them, so the input cannot inject commands
+      VERSION: ${{ inputs.version }}
+      PRERELEASE: ${{ contains(inputs.version, '-') }}
+      GH_TOKEN: ${{ github.token }}
+    steps:
+      - name: Check the branch and the version
+        run: |
+          if [ "$GITHUB_REF" != "refs/heads/main" ]; then
+            echo "::error::Releases are made from main, not from $GITHUB_REF"
+            exit 1
+          fi
+          if ! [[ "$VERSION" =~ ^[0-9]+\.[0-9]+\.[0-9]+(-[0-9A-Za-z.]+)?$ ]]; then
+            echo "::error::'$VERSION' is not a version like 1.2.0 or 1.2.0-beta.1"
+            exit 1
+          fi
+
+      - uses: actions/checkout@v7
+
+      # A draft release has no tag yet, so both are checked
+      - name: Check that the version was not released yet
+        run: |
+          if git ls-remote --exit-code --tags origin "refs/tags/v$VERSION" > /dev/null \
+              || gh release view "v$VERSION" > /dev/null 2>&1; then
+            echo "::error::v$VERSION is already released or drafted"
+            exit 1
+          fi
+
+      - name: Set the version
+        run: sed -i "s|<version>.*</version>|<version>$VERSION</version>|" metadata.xml
+
+      - name: Move the release notes to the version
+        run: python3 .github/scripts/release_notes.py "$VERSION" build/release-notes.md
+
+      - name: Check the mod
+        run: python3 .github/scripts/check_mod.py
+
+      # Nothing changes when main already has the version and its notes, e.g. when a deleted release is made again
+      - name: Commit the release
+        run: |
+          git add metadata.xml CHANGELOG.md
+          if git diff --cached --quiet; then
+            echo "metadata.xml and CHANGELOG.md are already up to date, releasing the current commit"
+          else
+            git config user.name "github-actions[bot]"
+            git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+            git commit -m "Released $VERSION."
+            git push origin HEAD:main
+          fi
+          echo "RELEASE_COMMIT=$(git rev-parse HEAD)" >> "$GITHUB_ENV"
+
+      # Only the files the game loads, in a folder named like <directory>, ready to unzip into the mods folder
+      - name: Pack the mod
+        run: |
+          mkdir -p build/package/tlost-double-hc
+          cp main.lua metadata.xml build/package/tlost-double-hc/
+          (cd build/package && zip -r "../tlost-double-hc-$VERSION.zip" tlost-double-hc)
+
+      - name: Draft the GitHub release
+        uses: softprops/action-gh-release@v3
+        with:
+          draft: true
+          tag_name: v${{ env.VERSION }}
+          target_commitish: ${{ env.RELEASE_COMMIT }}
+          name: Double Holy Cards for Tainted Lost ${{ env.VERSION }}
+          body_path: build/release-notes.md
+          prerelease: ${{ env.PRERELEASE }}
+          files: build/tlost-double-hc-${{ env.VERSION }}.zip
