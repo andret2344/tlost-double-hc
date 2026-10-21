@@ -65,3 +65,6 @@ survival. Target: 20% combined with vanilla's own roll, i.e. twice vanilla.
 - `RNG:SetSeed`: seed never 0 (`math.max(seed, 1)`), shift index 35.
 - Never touch items tagged `ItemConfig.TAG_QUEST`.
 - Never edit the `<id>` field in `metadata.xml`, the Workshop uploader assigns it.
+- Versions: GitHub releases (`release.yml`) set `<version>` in the repo. ModUploader bumps the last number
+  on every upload (0.1.0 became 0.1.1 on the Workshop), and that bump is accepted: the Workshop version
+  runs ahead of the repo by its patch number, so it is not synced back into the repo.
